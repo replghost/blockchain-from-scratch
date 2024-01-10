@@ -40,7 +40,93 @@ impl StateMachine for ClothesMachine {
     type Transition = ClothesAction;
 
     fn next_state(starting_state: &ClothesState, t: &ClothesAction) -> ClothesState {
-        todo!("Exercise 3")
+        match(starting_state) {
+            ClothesState::Clean(lifetime) => {
+
+                match (t) {
+                    ClothesAction::Dry => {
+                        match (lifetime) {
+                            1 => ClothesState::Tattered,
+                            _ => ClothesState::Clean(lifetime - 1)
+                        }
+                    },
+                    ClothesAction::Wash => {
+                        match (lifetime) {
+                            1 => ClothesState::Tattered,
+                            _ => ClothesState::Wet(lifetime - 1)
+                        }
+                    },
+                    ClothesAction::Wear => {
+                        match (lifetime) {
+                            1 => ClothesState::Tattered,
+                            _ => ClothesState::Dirty(lifetime - 1)
+                        }
+                        
+                    }
+                }
+            },
+            ClothesState::Dirty(lifetime) => {
+                match (t) {
+                    ClothesAction::Dry => {
+                        match (lifetime) {
+                            1 => ClothesState::Tattered,
+                            _ => ClothesState::Dirty(lifetime - 1)
+                        }
+                    },
+                    ClothesAction::Wash => {
+                        match (lifetime) {
+                            1 => ClothesState::Tattered,
+                            _ => ClothesState::Wet(lifetime - 1)
+                        }
+                    },
+                    ClothesAction::Wear => {
+                        match (lifetime) {
+                            1 => ClothesState::Tattered,
+                            _ => ClothesState::Dirty(lifetime - 1)
+                        }
+                    }
+                }
+            },
+            ClothesState::Wet(lifetime) => {
+                match (t) {
+                    ClothesAction::Dry => {
+                        match (lifetime) {
+                            1 => ClothesState::Tattered,
+                            _ => ClothesState::Clean(lifetime - 1)
+                        }
+                    },
+                    ClothesAction::Wash => {
+                        match (lifetime) {
+                            1 => ClothesState::Tattered,
+                            _ => ClothesState::Wet(lifetime - 1)
+                        }
+                    },
+                    ClothesAction::Wear => {
+                        match (lifetime) {
+                            1 => ClothesState::Tattered,
+                            _ => ClothesState::Dirty(lifetime - 1)
+                        }
+                    }
+                }
+            },
+            ClothesState::Tattered => {
+                ClothesState::Tattered
+                // match (t) {
+                //     ClothesAction::Dry => {
+                //         ClothesState::Tattered
+                //     },
+                //     ClothesAction::Wash => {
+                //         ClothesState::Tattered
+                //     },
+                //     ClothesAction::Wear => {
+                //         ClothesState::Tattered
+                //     }
+                // }
+            }
+        }
+
+
+
     }
 }
 

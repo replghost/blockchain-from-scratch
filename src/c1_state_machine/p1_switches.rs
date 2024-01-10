@@ -2,6 +2,8 @@
 //! In these examples, we use actually switch boards as the state machine. The state is,
 //! well, just the state of the switches.
 
+use std::env::set_current_dir;
+
 use super::StateMachine;
 
 /// This state machine models a single light switch.
@@ -15,7 +17,7 @@ impl StateMachine for LightSwitch {
     type Transition = ();
 
     fn next_state(starting_state: &bool, t: &()) -> bool {
-        todo!("Exercise 1")
+        !starting_state
     }
 }
 
@@ -42,7 +44,31 @@ impl StateMachine for WeirdSwitchMachine {
     type Transition = Toggle;
 
     fn next_state(starting_state: &TwoSwitches, t: &Toggle) -> TwoSwitches {
-        todo!("Exercise 2")
+        // match statement
+        match t {
+            Toggle::FirstSwitch => {
+                match starting_state.first_switch {
+                    false => {
+                        TwoSwitches {
+                            first_switch: true,
+                            second_switch: starting_state.second_switch
+                        }
+                    },
+                    true => {
+                        TwoSwitches {
+                            first_switch: false,
+                            second_switch: false
+                        }
+                    }
+                }
+            },
+            Toggle::SecondSwitch => {
+                TwoSwitches {
+                    first_switch: starting_state.first_switch,
+                    second_switch: !starting_state.second_switch
+                }
+            }
+        }
     }
 }
 

@@ -58,7 +58,80 @@ impl StateMachine for Atm {
     type Transition = Action;
 
     fn next_state(starting_state: &Self::State, t: &Self::Transition) -> Self::State {
-        todo!("Exercise 4")
+        // todo!("Exercise 4")
+
+        match(starting_state.expected_pin_hash.clone()) {
+            Auth::Waiting => {
+                match(t) {
+                    Action::SwipeCard(hash) => {
+                        Atm {
+                            cash_inside: starting_state.cash_inside,
+                            expected_pin_hash: Auth::Authenticating(hash.to_owned()),
+                            keystroke_register: Vec::new(),
+                        }
+                    },
+                    _ => {
+                        Atm {
+                            cash_inside: starting_state.cash_inside,
+                            expected_pin_hash: starting_state.expected_pin_hash,
+                            keystroke_register: Vec::new(),
+                        }
+                    }
+                }
+            },
+            Auth::Authenticating(hash) => {
+                match(t) {
+                    Action::SwipeCard(hash) => {
+                        Atm {
+                            cash_inside: starting_state.cash_inside,
+                            expected_pin_hash: Auth::Authenticating(hash.to_owned()),
+                            keystroke_register: Vec::new(),
+                        }
+                    },
+                    Action::PressKey(key) => {
+                        match(key) => {
+                            Key::Enter => {
+                                match(starting_state.expected_pin_hash) {
+                                    keystroke_register => {
+                                        Atm {
+                                            cash_inside: starting_state.cash_inside,
+                                            expected_pin_hash: Auth::Authenticated,
+                                            keystroke_register: Vec::new(),
+                                        }
+                                    },
+                                    _ => {
+                                        Atm {
+                                            cash_inside: starting_state.cash_inside,
+                                            expected_pin_hash: Auth::Authenticating(hash.to_owned()),
+                                            keystroke_register: starting_state.keystroke_register,
+                                        }
+                                    }
+                                }
+                            },
+                            other => {
+                                Atm {
+                                    cash_inside: starting_state.cash_inside,
+                                    expected_pin_hash: Auth::Authenticating(hash.to_owned()),
+                                    keystroke_register: starting_state.keystroke_register.append(key),
+                                }
+                            }
+                        }
+                        
+                    }
+                    _ => {
+                        starting_state
+                    }
+                }
+            },
+            _ => {
+                // Auth::Authenticated
+                Atm {
+                    cash_inside: 10,
+                    expected_pin_hash: Auth::Authenticating(1),
+                    keystroke_register: Vec::new(),
+                }
+            }
+        }
     }
 }
 
